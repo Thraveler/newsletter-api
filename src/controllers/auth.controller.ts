@@ -1,12 +1,16 @@
 import { Request, Response } from "express";
-import * as NewsletterService from "../services/newsletter.service";
+import * as AuthService from "../services/auth.service";
 
 const register = async (req: Request, res: Response) => {
-  res.json("Hi from register");
+  const userCreated = await AuthService.createUser(req.body);
+
+  res.status(201).json(userCreated);
 };
 
 const login = async (req: Request, res: Response) => {
-  res.json("Hi from login");
+  const isLogged = await AuthService.loginUser(req.body);
+
+  res.json(isLogged);
 };
 
 export { register, login };
