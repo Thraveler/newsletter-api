@@ -5,7 +5,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from "typeorm";
+import { User } from "./user.entity";
 
 @Entity()
 export class Newsletter implements INewsletter {
@@ -14,6 +16,9 @@ export class Newsletter implements INewsletter {
 
   @Column()
   name!: string;
+
+  @ManyToOne(() => User, (user) => user.newsletters)
+  owner?: User;
 
   @CreateDateColumn()
   createdAt!: Date;

@@ -30,4 +30,10 @@ const loginUser = async (data: IAuth): Promise<String | Boolean> => {
   return jwt;
 };
 
-export { createUser, loginUser };
+const findUserById = async (userId: number): Promise<User | null> => {
+  const userFound = await userRepository.findOneBy({ id: userId });
+
+  return userFound;
+};
+
+export { createUser, loginUser, findUserById };

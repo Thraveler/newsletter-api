@@ -5,7 +5,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from "typeorm";
+import { Newsletter } from "./newsletter.entity";
 
 @Entity()
 export class User implements IUser {
@@ -23,6 +25,9 @@ export class User implements IUser {
 
   @Column()
   password!: string;
+
+  @OneToMany(() => Newsletter, (newsletter) => newsletter.owner)
+  newsletters!: Newsletter[];
 
   @CreateDateColumn()
   createdAt!: Date;

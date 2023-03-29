@@ -1,4 +1,5 @@
 import { sign, verify } from "jsonwebtoken";
+import { JwtDecoded } from "../interfaces/jwtDecoded.interface";
 const JWT_SECRET = process.env.JWT_SECRET || "nonsecuresecret";
 
 const generateToken = async (userId: string) => {
@@ -9,10 +10,11 @@ const generateToken = async (userId: string) => {
   return jwtGenerated;
 };
 
-const vefiryToken = (token: string) => {
-  const validToken = verify(token, JWT_SECRET);
+const vefiryAuthorization = (authorization: string): JwtDecoded => {
+  const token = authorization.split(" ").pop();
+  const jwtDecoded = verify(`${token}`, JWT_SECRET) as JwtDecoded;
 
-  return validToken;
+  return jwtDecoded;
 };
 
-export { generateToken, vefiryToken };
+export { generateToken, vefiryAuthorization };
