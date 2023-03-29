@@ -15,9 +15,6 @@ export class Newsletter implements INewsletter {
   @Column()
   name!: string;
 
-  @Column()
-  email!: string;
-
   @CreateDateColumn()
   createdAt!: Date;
 
