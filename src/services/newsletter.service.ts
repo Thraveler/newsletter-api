@@ -65,6 +65,7 @@ const findNewsletterById = async (newsletterId: number) => {
       "subscriber.email",
       "campaign.id",
       "campaign.subject",
+      "campaign.sendDate",
     ])
     .where("newsletter.id = :newsletterId", { newsletterId })
     .getOne();

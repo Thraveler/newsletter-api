@@ -20,7 +20,7 @@ export class User implements IUser {
   @Column()
   lastname!: string;
 
-  @Column()
+  @Column({ unique: true })
   email!: string;
 
   @Column()

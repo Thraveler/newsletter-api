@@ -22,7 +22,7 @@ export class Campaign implements ICampaign {
   @Column()
   content!: string;
 
-  @Column()
+  @Column({ nullable: true })
   sendDate!: Date;
 
   @ManyToOne(() => Newsletter, (newsletter) => newsletter.campaigns)
