@@ -1,23 +1,27 @@
 import db from "../config/database";
 import { Newsletter } from "../entities/newsletter.entity";
+import { Subscriber } from "../entities/subscriber.entity";
 import { findUserById } from "./auth.service";
+import * as SubscriberService from "./subscriber.service";
 
-const newsLetterRepository = db.getRepository(Newsletter);
+const newsletterRepository = db.getRepository(Newsletter);
 
 const getNewsLetters = async (): Promise<Newsletter[]> => {
-  const newsLetterList = await newsLetterRepository
+  const newsletterList = await newsletterRepository
     .createQueryBuilder("newsletter")
     .leftJoinAndSelect("newsletter.owner", "user")
+    .leftJoin("newsletter.subscribers", "subscriber")
     .select([
       "newsletter.name",
       "newsletter.createdAt",
       "newsletter.updatedAt",
       "user.name",
       "user.email",
+      "subscriber.email",
     ])
     .getMany();
 
-  return newsLetterList;
+  return newsletterList;
 };
 
 const createNewsLetter = async (
@@ -29,10 +33,39 @@ const createNewsLetter = async (
   if (!userFound) return false;
 
   data.owner = userFound;
-  const newsletter = await newsLetterRepository.save(data);
+  const newsletter = await newsletterRepository.save(data);
   delete newsletter.owner;
 
   return newsletter;
 };
 
-export { getNewsLetters, createNewsLetter };
+const findNewsletterById = async (newsletterId: number) => {
+  const newsletterFound = await newsletterRepository
+    .createQueryBuilder("newsletter")
+    .leftJoin("newsletter.subscribers", "subscriber")
+    .select([
+      "newsletter.name",
+      "newsletter.id",
+      "subscriber.email",
+      "subscriber.id",
+    ])
+    .getOne();
+
+  return newsletterFound;
+};
+
+const addSubscriber = async (newsletterId: number, data: Subscriber) => {
+  const newsletterFound = await findNewsletterById(newsletterId);
+
+  if (!newsletterFound) return false;
+
+  const subscriberCreated = await SubscriberService.createSubscriber(data);
+
+  newsletterFound.subscribers?.push(subscriberCreated);
+
+  const newsletterUpdated = await newsletterRepository.save(newsletterFound);
+
+  return newsletterUpdated;
+};
+
+export { getNewsLetters, createNewsLetter, addSubscriber };
