@@ -1,8 +1,10 @@
 import db from "../config/database";
 import { Newsletter } from "../entities/newsletter.entity";
 import { Subscriber } from "../entities/subscriber.entity";
+import { Campaing } from "../entities/campaing.entity";
 import { findUserById } from "./auth.service";
 import * as SubscriberService from "./subscriber.service";
+import * as CampaingService from "./campaing.service";
 
 const newsletterRepository = db.getRepository(Newsletter);
 
@@ -11,6 +13,7 @@ const getNewsLetters = async (): Promise<Newsletter[]> => {
     .createQueryBuilder("newsletter")
     .leftJoinAndSelect("newsletter.owner", "user")
     .leftJoin("newsletter.subscribers", "subscriber")
+    .leftJoin("newsletter.campaings", "campaing")
     .select([
       "newsletter.name",
       "newsletter.createdAt",
@@ -18,6 +21,7 @@ const getNewsLetters = async (): Promise<Newsletter[]> => {
       "user.name",
       "user.email",
       "subscriber.email",
+      "campaing.subject",
     ])
     .getMany();
 
@@ -68,4 +72,19 @@ const addSubscriber = async (newsletterId: number, data: Subscriber) => {
   return newsletterUpdated;
 };
 
-export { getNewsLetters, createNewsLetter, addSubscriber };
+const addCampaing = async (newsletterId: number, data: Campaing) => {
+  const newsletterFound = await findNewsletterById(newsletterId);
+
+  if (!newsletterFound) return false;
+
+  data.newsletter = newsletterFound;
+  const campaingCreated = await CampaingService.createCampaing(data);
+
+  newsletterFound.campaings?.push(campaingCreated);
+
+  const newsletterUpdated = await newsletterRepository.save(newsletterFound);
+
+  return newsletterUpdated;
+};
+
+export { getNewsLetters, createNewsLetter, addSubscriber, addCampaing };

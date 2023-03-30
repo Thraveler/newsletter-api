@@ -27,4 +27,13 @@ const addSubscriber = async (req: Request, res: Response) => {
   res.json(newsletterUpdated);
 };
 
-export { getNewsletters, createNewsLetter, addSubscriber };
+const addCampaing = async (req: Request, res: Response) => {
+  const campaingCreated = await NewsletterService.addCampaing(
+    +req.params.newsletterId,
+    req.body
+  );
+
+  res.json(campaingCreated);
+};
+
+export { getNewsletters, createNewsLetter, addSubscriber, addCampaing };

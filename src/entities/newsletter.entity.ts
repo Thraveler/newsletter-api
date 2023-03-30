@@ -8,9 +8,11 @@ import {
   ManyToOne,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from "typeorm";
 import { User } from "./user.entity";
 import { Subscriber } from "./subscriber.entity";
+import { Campaing } from "./campaing.entity";
 
 @Entity()
 export class Newsletter implements INewsletter {
@@ -26,6 +28,9 @@ export class Newsletter implements INewsletter {
   @ManyToMany(() => Subscriber, (subscriber) => subscriber.newsletters)
   @JoinTable()
   subscribers?: Subscriber[];
+
+  @OneToMany(() => Campaing, (campaing) => campaing.newsletter)
+  campaings!: Campaing[];
 
   @CreateDateColumn()
   createdAt!: Date;
