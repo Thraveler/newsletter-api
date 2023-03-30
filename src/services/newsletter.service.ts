@@ -1,28 +1,34 @@
 import db from "../config/database";
 import { Newsletter } from "../entities/newsletter.entity";
 import { Subscriber } from "../entities/subscriber.entity";
-import { Campaing } from "../entities/campaing.entity";
-import { findUserById } from "./auth.service";
+import { Campaign } from "../entities/campaign.entity";
+import * as UserService from "./user.service";
 import * as SubscriberService from "./subscriber.service";
-import * as CampaingService from "./campaing.service";
+import * as CampaignService from "./campaign.service";
 
 const newsletterRepository = db.getRepository(Newsletter);
 
-const getNewsLetters = async (): Promise<Newsletter[]> => {
+const getNewsLetters = async (userId: number): Promise<Newsletter[]> => {
   const newsletterList = await newsletterRepository
     .createQueryBuilder("newsletter")
-    .leftJoinAndSelect("newsletter.owner", "user")
-    .leftJoin("newsletter.subscribers", "subscriber")
-    .leftJoin("newsletter.campaings", "campaing")
+    .leftJoin("newsletter.owner", "user")
+    .loadRelationCountAndMap(
+      "newsletter.countSubscribers",
+      "newsletter.subscribers"
+    )
+    .loadRelationCountAndMap(
+      "newsletter.countCampaigns",
+      "newsletter.campaigns"
+    )
     .select([
+      "newsletter.id",
       "newsletter.name",
       "newsletter.createdAt",
       "newsletter.updatedAt",
       "user.name",
       "user.email",
-      "subscriber.email",
-      "campaing.subject",
     ])
+    .where("user.id = :userId", { userId })
     .getMany();
 
   return newsletterList;
@@ -32,7 +38,7 @@ const createNewsLetter = async (
   userId: number,
   data: Newsletter
 ): Promise<Newsletter | Boolean> => {
-  const userFound = await findUserById(userId);
+  const userFound = await UserService.findUserById(userId);
 
   if (!userFound) return false;
 
@@ -46,13 +52,21 @@ const createNewsLetter = async (
 const findNewsletterById = async (newsletterId: number) => {
   const newsletterFound = await newsletterRepository
     .createQueryBuilder("newsletter")
+    .leftJoin("newsletter.owner", "user")
     .leftJoin("newsletter.subscribers", "subscriber")
+    .leftJoin("newsletter.campaigns", "campaign")
     .select([
-      "newsletter.name",
       "newsletter.id",
-      "subscriber.email",
+      "newsletter.name",
+      "user.id",
+      "user.name",
+      "user.email",
       "subscriber.id",
+      "subscriber.email",
+      "campaign.id",
+      "campaign.subject",
     ])
+    .where("newsletter.id = :newsletterId", { newsletterId })
     .getOne();
 
   return newsletterFound;
@@ -72,19 +86,25 @@ const addSubscriber = async (newsletterId: number, data: Subscriber) => {
   return newsletterUpdated;
 };
 
-const addCampaing = async (newsletterId: number, data: Campaing) => {
+const addCampaign = async (newsletterId: number, data: Campaign) => {
   const newsletterFound = await findNewsletterById(newsletterId);
 
   if (!newsletterFound) return false;
 
   data.newsletter = newsletterFound;
-  const campaingCreated = await CampaingService.createCampaing(data);
+  const campaignCreated = await CampaignService.createCampaign(data);
 
-  newsletterFound.campaings?.push(campaingCreated);
+  newsletterFound.campaigns?.push(campaignCreated);
 
   const newsletterUpdated = await newsletterRepository.save(newsletterFound);
 
   return newsletterUpdated;
 };
 
-export { getNewsLetters, createNewsLetter, addSubscriber, addCampaing };
+export {
+  getNewsLetters,
+  createNewsLetter,
+  findNewsletterById,
+  addSubscriber,
+  addCampaign,
+};

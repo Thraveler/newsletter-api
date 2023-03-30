@@ -12,7 +12,7 @@ import {
 } from "typeorm";
 import { User } from "./user.entity";
 import { Subscriber } from "./subscriber.entity";
-import { Campaing } from "./campaing.entity";
+import { Campaign } from "./campaign.entity";
 
 @Entity()
 export class Newsletter implements INewsletter {
@@ -29,8 +29,8 @@ export class Newsletter implements INewsletter {
   @JoinTable()
   subscribers?: Subscriber[];
 
-  @OneToMany(() => Campaing, (campaing) => campaing.newsletter)
-  campaings!: Campaing[];
+  @OneToMany(() => Campaign, (campaign) => campaign.newsletter)
+  campaigns!: Campaign[];
 
   @CreateDateColumn()
   createdAt!: Date;

@@ -1,4 +1,4 @@
-import { ICampaing } from "../interfaces/campaing.interface";
+import { ICampaign } from "../interfaces/campaign.interface";
 import {
   Entity,
   Column,
@@ -9,11 +9,10 @@ import {
   ManyToMany,
   JoinTable,
 } from "typeorm";
-import { User } from "./user.entity";
 import { Newsletter } from "./newsletter.entity";
 
 @Entity()
-export class Campaing implements ICampaing {
+export class Campaign implements ICampaign {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -26,7 +25,7 @@ export class Campaing implements ICampaing {
   @Column()
   sendDate!: Date;
 
-  @ManyToOne(() => Newsletter, (newsletter) => newsletter.campaings)
+  @ManyToOne(() => Newsletter, (newsletter) => newsletter.campaigns)
   newsletter?: Newsletter;
 
   @CreateDateColumn()
