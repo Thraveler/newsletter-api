@@ -1,7 +1,12 @@
 import { Router } from "express";
-import { sendCampaign } from "../controllers/campaign.controller";
+import {
+  sendCampaign,
+  getCampaignById,
+} from "../controllers/campaign.controller";
 
 const campaignRouter = Router();
+
+campaignRouter.get("/:campaignId", getCampaignById);
 
 campaignRouter.post("/:campaignId", sendCampaign);
 

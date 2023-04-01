@@ -3,6 +3,14 @@ import * as CampaignService from "../services/campaign.service";
 import * as NewsletterService from "../services/newsletter.service";
 import * as NodemailUtils from "../utils/nodemailer.util";
 
+const getCampaignById = async (req: Request, res: Response) => {
+  const campaignFound = await CampaignService.getCampaignById(
+    +req.params.campaignId
+  );
+
+  res.json(campaignFound);
+};
+
 const sendCampaign = async (req: Request, res: Response) => {
   const campaignFound = await CampaignService.getCampaignById(
     +req.params.campaignId
@@ -31,4 +39,4 @@ const sendCampaign = async (req: Request, res: Response) => {
   }
 };
 
-export { sendCampaign };
+export { sendCampaign, getCampaignById };
