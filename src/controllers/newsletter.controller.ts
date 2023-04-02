@@ -85,9 +85,9 @@ const addCampaign = async (req: Request, res: Response) => {
       req.body
     );
 
-    res.status(201).json({
-      message: "Campaign added to newsletter!",
-    });
+    res.status(201).json(
+      campaignCreated
+    );
   } catch (error) {
     console.error(error);
 

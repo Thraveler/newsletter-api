@@ -63,10 +63,14 @@ const findNewsletterById = async (newsletterId: number) => {
       "user.lastname",
       "user.email",
       "subscriber.id",
+      "subscriber.name",
+      "subscriber.lastname",
       "subscriber.email",
       "campaign.id",
       "campaign.subject",
       "campaign.sendDate",
+      "campaign.createdAt",
+      "campaign.updatedAt",
     ])
     .where("newsletter.id = :newsletterId", { newsletterId })
     .getOne();
@@ -100,7 +104,9 @@ const addCampaign = async (newsletterId: number, data: Campaign) => {
 
   const newsletterUpdated = await newsletterRepository.save(newsletterFound);
 
-  return newsletterUpdated;
+  delete campaignCreated.newsletter;
+
+  return campaignCreated;
 };
 
 export {
