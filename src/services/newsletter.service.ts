@@ -60,6 +60,7 @@ const findNewsletterById = async (newsletterId: number) => {
       "newsletter.name",
       "user.id",
       "user.name",
+      "user.lastname",
       "user.email",
       "subscriber.id",
       "subscriber.email",

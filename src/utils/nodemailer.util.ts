@@ -21,7 +21,7 @@ const options = (
   content: string
 ): nodemailer.SendMailOptions => {
   return {
-    from: `${name}`,
+    from: `${name} <${process.env.EMAIL}>`,
     to: receivers,
     subject: subject,
     text: content,
