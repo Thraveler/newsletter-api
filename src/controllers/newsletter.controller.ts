@@ -78,6 +78,25 @@ const addSubscriber = async (req: Request, res: Response) => {
   }
 };
 
+const removeSubscriber = async (req: Request, res: Response) => {
+  try {
+    const newsletterUpdated = await NewsletterService.removeSubscriber(
+      +req.params.newsletterId,
+      +req.params.subscriberId
+    );
+
+    res.status(201).json({
+      message: "Subscriber removed from newsletter!"
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "There was an error during remove subscriber from newsletter!",
+    });
+  }
+};
+
 const addCampaign = async (req: Request, res: Response) => {
   req.body.file = req.file?.filename;
 
@@ -104,5 +123,6 @@ export {
   createNewsLetter,
   getNewsletterById,
   addSubscriber,
+  removeSubscriber,
   addCampaign,
 };

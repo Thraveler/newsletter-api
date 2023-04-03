@@ -9,4 +9,10 @@ const createSubscriber = async (data: Subscriber): Promise<Subscriber> => {
   return subscriberCreated;
 };
 
-export { createSubscriber };
+const findSubscriberByEmail = async (email: string): Promise<Subscriber | null> => {
+  const subscriberFound = await subscriberRepository.findOne({ where: { email: email } });
+
+  return subscriberFound;
+}
+
+export { createSubscriber, findSubscriberByEmail };

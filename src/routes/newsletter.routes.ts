@@ -5,6 +5,7 @@ import {
   getNewsletterById,
   addSubscriber,
   addCampaign,
+  removeSubscriber
 } from "../controllers/newsletter.controller";
 import multer from "../middleware/multer.middleware"
 
@@ -17,6 +18,8 @@ newsletterRouter.post("/", createNewsLetter);
 newsletterRouter.get("/:newsletterId", getNewsletterById);
 
 newsletterRouter.post("/:newsletterId/subscribers", addSubscriber);
+
+newsletterRouter.delete("/:newsletterId/subscribers/:subscriberId", removeSubscriber);
 
 newsletterRouter.post("/:newsletterId/campaigns", multer.single('newsletter'), addCampaign);
 

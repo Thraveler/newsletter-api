@@ -83,13 +83,34 @@ const addSubscriber = async (newsletterId: number, data: Subscriber) => {
 
   if (!newsletterFound) return false;
 
-  const subscriberCreated = await SubscriberService.createSubscriber(data);
+  const existSubscriber = await SubscriberService.findSubscriberByEmail(data.email);
 
-  newsletterFound.subscribers?.push(subscriberCreated);
+  if (existSubscriber) {
+    newsletterFound.subscribers?.push(existSubscriber);
+
+  } else {
+    const subscriberCreated = await SubscriberService.createSubscriber(data);
+    newsletterFound.subscribers?.push(subscriberCreated);
+  }
+
 
   const newsletterUpdated = await newsletterRepository.save(newsletterFound);
 
   return newsletterUpdated;
+};
+
+const removeSubscriber = async (newsletterId: number, subscriberId: number) => {
+  const newsletterFound = await findNewsletterById(newsletterId);
+
+  if (!newsletterFound) return false;
+
+  newsletterFound.subscribers = newsletterFound.subscribers?.filter((subscriber) => {
+    return subscriber.id !== subscriberId
+  });
+
+  const result = await db.manager.save(newsletterFound)
+
+  return result;
 };
 
 const addCampaign = async (newsletterId: number, data: Campaign) => {
@@ -114,5 +135,6 @@ export {
   createNewsLetter,
   findNewsletterById,
   addSubscriber,
+  removeSubscriber,
   addCampaign,
 };
