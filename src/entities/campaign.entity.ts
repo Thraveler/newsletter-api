@@ -23,6 +23,9 @@ export class Campaign implements ICampaign {
   content!: string;
 
   @Column({ nullable: true })
+  image!: string;
+
+  @Column({ nullable: true })
   sendDate!: Date;
 
   @ManyToOne(() => Newsletter, (newsletter) => newsletter.campaigns)

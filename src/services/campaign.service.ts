@@ -22,6 +22,7 @@ const getCampaignById = async (
       "campaign.sendDate",
       "campaign.createdAt",
       "campaign.updatedAt",
+      "campaign.image",
       "newsletter.id",
     ])
     .where("campaign.id = :campaignId", { campaignId })
