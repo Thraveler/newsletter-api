@@ -99,13 +99,13 @@ const addSubscriber = async (newsletterId: number, data: Subscriber) => {
   return newsletterUpdated;
 };
 
-const removeSubscriber = async (newsletterId: number, subscriberId: number) => {
+const removeSubscriber = async (newsletterId: number, email: string) => {
   const newsletterFound = await findNewsletterById(newsletterId);
 
   if (!newsletterFound) return false;
 
   newsletterFound.subscribers = newsletterFound.subscribers?.filter((subscriber) => {
-    return subscriber.id !== subscriberId
+    return subscriber.email !== email
   });
 
   const result = await db.manager.save(newsletterFound)

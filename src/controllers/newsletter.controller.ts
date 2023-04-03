@@ -82,7 +82,7 @@ const removeSubscriber = async (req: Request, res: Response) => {
   try {
     const newsletterUpdated = await NewsletterService.removeSubscriber(
       +req.params.newsletterId,
-      +req.params.subscriberId
+      req.body.email
     );
 
     res.status(201).json({

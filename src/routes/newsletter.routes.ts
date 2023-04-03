@@ -19,7 +19,7 @@ newsletterRouter.get("/:newsletterId", getNewsletterById);
 
 newsletterRouter.post("/:newsletterId/subscribers", addSubscriber);
 
-newsletterRouter.delete("/:newsletterId/subscribers/:subscriberId", removeSubscriber);
+newsletterRouter.post("/:newsletterId/unsubscribe/", removeSubscriber);
 
 newsletterRouter.post("/:newsletterId/campaigns", multer.single('newsletter'), addCampaign);
 
