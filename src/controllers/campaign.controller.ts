@@ -12,31 +12,38 @@ const getCampaignById = async (req: Request, res: Response) => {
 };
 
 const sendCampaign = async (req: Request, res: Response) => {
-  const campaignFound = await CampaignService.getCampaignById(
-    +req.params.campaignId
-  );
-  if (campaignFound?.newsletter?.id) {
-    let newsletterFound = await NewsletterService.findNewsletterById(
-      +campaignFound?.newsletter?.id
+  try {
+    const campaignFound = await CampaignService.getCampaignById(
+      +req.params.campaignId
     );
-
-    if (newsletterFound && newsletterFound.subscribers) {
-      const transporter = NodemailUtils.createTransporter();
-      const options = NodemailUtils.options(
-        `${newsletterFound?.owner?.name} ${newsletterFound.owner?.lastname}`,
-        `${newsletterFound?.owner?.email}`,
-        newsletterFound.subscribers.map((s) => s.email),
-        campaignFound.subject,
-        campaignFound.content
+    if (campaignFound?.newsletter?.id) {
+      let newsletterFound = await NewsletterService.findNewsletterById(
+        +campaignFound?.newsletter?.id
       );
 
-      campaignFound.sendDate = new Date();
-      const result = await CampaignService.updateCampaign(campaignFound);
+      if (newsletterFound && newsletterFound.subscribers) {
+        const transporter = NodemailUtils.createTransporter();
+        const options = NodemailUtils.options(
+          `${newsletterFound?.owner?.name} ${newsletterFound.owner?.lastname}`,
+          newsletterFound.subscribers.map((s) => s.email),
+          campaignFound.subject,
+          campaignFound.content,
+          campaignFound.image
+        );
 
-      NodemailUtils.sendMail(transporter, options);
-      res.json({ message: "Newsletter sent", campaignFound });
+        campaignFound.sendDate = new Date();
+        await CampaignService.updateCampaign(campaignFound);
+
+        await NodemailUtils.sendMail(transporter, options);
+
+        res.json({ message: "Newsletter sent" });
+      }
     }
+
+  } catch (error) {
+    res.status(500).json({ message: "There was an error during send campaign!" })
   }
+
 };
 
 export { sendCampaign, getCampaignById };
