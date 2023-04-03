@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import * as CampaignService from "../services/campaign.service";
 import * as NewsletterService from "../services/newsletter.service";
 import * as NodemailUtils from "../utils/nodemailer.util";
+import { addUnsubscribeContent } from "../utils/utils";
 
 const getCampaignById = async (req: Request, res: Response) => {
   const campaignFound = await CampaignService.getCampaignById(
@@ -27,7 +28,7 @@ const sendCampaign = async (req: Request, res: Response) => {
           `${newsletterFound?.owner?.name} ${newsletterFound.owner?.lastname}`,
           newsletterFound.subscribers.map((s) => s.email),
           campaignFound.subject,
-          campaignFound.content,
+          addUnsubscribeContent(campaignFound.content, newsletterFound.id),
           campaignFound.file
         );
 
