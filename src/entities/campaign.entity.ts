@@ -23,7 +23,7 @@ export class Campaign implements ICampaign {
   content!: string;
 
   @Column({ nullable: true })
-  image!: string;
+  file!: string;
 
   @Column({ nullable: true })
   sendDate!: Date;

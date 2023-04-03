@@ -79,7 +79,7 @@ const addSubscriber = async (req: Request, res: Response) => {
 };
 
 const addCampaign = async (req: Request, res: Response) => {
-  req.body.image = req.file?.filename;
+  req.body.file = req.file?.filename;
 
   try {
     const campaignCreated = await NewsletterService.addCampaign(

@@ -28,7 +28,7 @@ const sendCampaign = async (req: Request, res: Response) => {
           newsletterFound.subscribers.map((s) => s.email),
           campaignFound.subject,
           campaignFound.content,
-          campaignFound.image
+          campaignFound.file
         );
 
         campaignFound.sendDate = new Date();
